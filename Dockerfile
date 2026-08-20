@@ -1,13 +1,12 @@
-FROM node:20-bullseye
+FROM node:20-alpine
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apk add --no-cache \
     ffmpeg \
-    git \
     imagemagick \
-    webp && \
-    npm i -g pm2 && \
-    rm -rf /var/lib/apt/lists/*
+    git \
+    python3 \
+    make \
+    g++
 
 WORKDIR /root/bot
 
@@ -16,4 +15,4 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-CMD ["pm2-runtime", "start", "index.js", "--name", "izumi"]
+CMD ["node", "index.js"]
