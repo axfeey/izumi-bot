@@ -1,9 +1,19 @@
-FROM node:lts-buster
+FROM node:20-bullseye
+
 RUN apt-get update && \
-  apt-get install -y ffmpeg git imagemagick webp && \
-  npm i -g pm2 && \
-  rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/Akshay-Eypz/izumi-bot /root/bot
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    git \
+    imagemagick \
+    webp && \
+    npm i -g pm2 && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /root/bot
+
+COPY package*.json ./
 RUN npm install --legacy-peer-deps
-CMD ["npm", "start"]
+
+COPY . .
+
+CMD ["pm2-runtime", "start", "index.js", "--name", "izumi"]
